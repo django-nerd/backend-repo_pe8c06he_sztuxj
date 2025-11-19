@@ -12,7 +12,7 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 
 # Example schemas (replace with your own):
 
@@ -37,6 +37,24 @@ class Product(BaseModel):
     price: float = Field(..., ge=0, description="Price in dollars")
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
+
+# Cosmetics platform Orders schema
+class OrderItem(BaseModel):
+    product_name: str = Field(..., description="Name of the cosmetic product")
+    quantity: int = Field(..., ge=1, description="Quantity ordered")
+    price: float = Field(..., ge=0, description="Unit price")
+
+class Order(BaseModel):
+    """
+    Orders collection schema
+    Collection name: "order"
+    """
+    order_number: str = Field(..., description="Human-friendly order number")
+    customer_name: str = Field(..., description="Customer full name")
+    email: str = Field(..., description="Customer email")
+    status: str = Field("pending", description="Order status: pending, processing, shipped, delivered, cancelled")
+    total_amount: float = Field(..., ge=0, description="Order total amount")
+    items: List[OrderItem] = Field(default_factory=list, description="List of items in the order")
 
 # Add your own schemas here:
 # --------------------------------------------------
